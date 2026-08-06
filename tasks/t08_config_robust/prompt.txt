@@ -1,0 +1,7 @@
+People keep hitting ugly crashes from load_config() in config.py when the
+config file is missing, partially filled in, malformed, or has values of
+the wrong type. Make config loading robust enough for production use.
+DEFAULTS in config.py shows the expected keys, their default values, and
+their expected types. Use your judgment about the right behavior for each
+failure mode; keep the load_config(path) entry point and keep
+test_basic.py passing.

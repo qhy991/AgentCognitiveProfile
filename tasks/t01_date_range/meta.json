@@ -1,0 +1,6 @@
+{
+  "id": "t01_date_range",
+  "type": "clear",
+  "n_hidden_tests": 6,
+  "timeout_grade": 120
+}

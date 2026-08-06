@@ -1,0 +1,12 @@
+Implement flatten(obj) in flatten.py. The input is always a dict (possibly
+nested with dicts and lists). Produce a flat dict mapping path strings to
+leaf values. Exact path rules:
+1. Nested dict keys are joined with "." (no leading dot): {"a":{"b":1}}
+   -> {"a.b": 1}.
+2. List elements append "[i]" directly to the path with no dot:
+   {"c":[1,{"d":2}]} -> {"c[0]": 1, "c[1].d": 2}.
+3. Scalars (str, int, float, bool, None) are leaves.
+4. An EMPTY dict or EMPTY list is itself kept as a leaf value at its path:
+   {"e":{}, "f":[]} -> {"e": {}, "f": []}.
+Example: flatten({"a":{"b":1},"c":[1,{"d":2}],"e":{}}) ==
+{"a.b":1, "c[0]":1, "c[1].d":2, "e":{}}.

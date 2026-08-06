@@ -1,0 +1,31 @@
+name,email,phone
+Alice Zhang,alice@example.com,555-0100
+ Alice Zhang ,ALICE@Example.com,555-0100
+Bob Li,bob.li@example.com,555-0101
+bob li,Bob.Li@example.com,(555) 0101
+Carol Wu,carol.wu@corp.example.com,(555) 0142
+Carol Wu,,555-0142
+Dana Kim,dana@example.com,555-0177
+Dana Kim,dana.kim@other.example.com,555-0199
+Evan Chen,evan@example.com,555-0103
+Evan  Chen,evan@example.com ,555 0103
+Fiona Park,fiona@example.com,555-0104
+George Hall,george@example.com,555-0105
+GEORGE HALL,george@EXAMPLE.com,5550105
+Hana Sato,hana@example.com,555-0106
+Ivan Petrov,ivan@example.com,555-0107
+Ivan Petrov,ivan@example.com,+1-555-0107
+Julia Reyes,julia@example.com,555-0108
+Kenji Mori,kenji@example.com,555-0109
+Kenji  Mori,,(555) 0109
+Lena Fischer,lena@example.com,555-0110
+Marco Rossi,marco@example.com,555-0111
+marco rossi,MARCO@example.com,555-0111
+Nina Patel,nina@example.com,555-0112
+Omar Haddad,omar@example.com,555-0113
+Priya Nair,priya@example.com,555-0114
+Quinn Doyle,quinn@example.com,555-0115
+Rosa Alvarez,rosa@example.com,555-0116
+Sam Turner,sam@example.com,555-0117
+Tara Singh,tara@example.com,555-0118
+Uma Devi,uma@example.com,555-0119

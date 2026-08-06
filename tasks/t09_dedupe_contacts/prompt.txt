@@ -1,0 +1,7 @@
+contacts.csv came from merging two CRM exports and is full of duplicate
+people. Write clean_contacts.py so that
+`python clean_contacts.py contacts.csv cleaned.csv` writes a deduplicated
+version. Keep the same three columns (name,email,phone) and one row per
+real person; use your judgment about what counts as the same person and
+which of the duplicate rows to keep. Careful: two different people can
+share a name.

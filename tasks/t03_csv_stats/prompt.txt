@@ -1,0 +1,9 @@
+column_mean() in stats.py keeps crashing on real-world CSV exports. Make it
+meet these requirements exactly:
+1. Cells that are empty or contain only whitespace are skipped.
+2. Cells that are not valid numbers (e.g. "N/A", "abc") are also skipped.
+3. If the column exists but has no numeric values at all (or the file has
+   no data rows), return None instead of raising.
+4. If the requested column name does not exist in the header, raise
+   ValueError with the column name mentioned in the message.
+Keep the function signature column_mean(csv_text, column) unchanged.

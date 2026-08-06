@@ -1,0 +1,6 @@
+{
+  "id": "t04_slugify",
+  "type": "clear",
+  "n_hidden_tests": 7,
+  "timeout_grade": 120
+}

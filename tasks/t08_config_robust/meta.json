@@ -1,0 +1,7 @@
+{
+  "id": "t08_config_robust",
+  "type": "vague",
+  "n_hidden_tests": 5,
+  "visible_tests": ["test_basic.py"],
+  "timeout_grade": 120
+}

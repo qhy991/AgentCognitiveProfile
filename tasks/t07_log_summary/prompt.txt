@@ -1,0 +1,5 @@
+server.log is a one-hour sample of our API server's logs. Implement
+summarize.py so that `python summarize.py server.log` prints a useful
+summary of what is going on. Imagine the person reading it is on call at
+3am and needs to get the picture at a glance. It's up to you what a good
+summary contains and how it looks.

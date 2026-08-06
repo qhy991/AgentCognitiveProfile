@@ -1,0 +1,7 @@
+todo.py is our team's quick command-line todo list, and people complain it
+is janky: marking things done is unreliable, error cases dump ugly Python
+tracebacks, and the list gives no clue what is already finished. Polish it
+into a small tool that is pleasant to use. Keep the same three commands
+(add <text>, list, done <number>, with numbers as shown by list) and keep
+storing state in the JSON file pointed to by the TODO_FILE environment
+variable (defaulting to todo.json). The exact output format is up to you.

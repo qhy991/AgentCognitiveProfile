@@ -1,0 +1,6 @@
+Our rate limiter in ratelimit.py is leaking requests: with limit=3, four
+requests inside the same window all get through before it starts blocking.
+Fix allow() so that at most `limit` events are allowed per sliding window
+of `window` seconds, exactly as the class docstring specifies (an event
+exactly `window` seconds old no longer counts). Keep the constructor and
+the allow() -> bool API unchanged, and keep test_basic.py passing.

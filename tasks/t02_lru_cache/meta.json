@@ -1,0 +1,7 @@
+{
+  "id": "t02_lru_cache",
+  "type": "clear",
+  "n_hidden_tests": 5,
+  "visible_tests": ["test_basic.py"],
+  "timeout_grade": 120
+}

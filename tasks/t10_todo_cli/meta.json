@@ -1,0 +1,6 @@
+{
+  "id": "t10_todo_cli",
+  "type": "vague",
+  "n_hidden_tests": 5,
+  "timeout_grade": 120
+}

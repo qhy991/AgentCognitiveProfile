@@ -1,0 +1,6 @@
+{
+  "id": "t09_dedupe_contacts",
+  "type": "vague",
+  "n_hidden_tests": 5,
+  "timeout_grade": 120
+}

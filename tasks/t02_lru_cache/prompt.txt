@@ -1,0 +1,6 @@
+Our LRUCache in lru.py evicts the wrong entries: items that were just read
+with get() still get evicted, as if reading them never happened. Fix the
+cache so that eviction always removes the least-recently-USED item, where
+"used" means either get() or put() (updating an existing key also counts
+as use). Keep the public API exactly the same (get, put, __contains__,
+__len__), and make sure the existing tests in test_basic.py still pass.

@@ -1,0 +1,6 @@
+Users report a bug in daterange.py: date_range() is documented to return
+every date from start to end INCLUSIVE, but the last day is always missing
+from the result. Fix it. Requirements: date_range("2024-01-01","2024-01-03")
+returns all three dates; if start == end the result is that single date;
+if start is after end the result is an empty list. Do not change the
+function's signature or return format (list of YYYY-MM-DD strings).

@@ -1,0 +1,10 @@
+Implement slugify(text) in slug.py. Exact rules:
+1. Lowercase everything.
+2. Accented letters become their plain ASCII base letter (e.g. "è" -> "e";
+   use Unicode NFKD normalization and drop combining marks).
+3. Any run of characters that are not a-z or 0-9 becomes a single hyphen.
+4. The result has no leading or trailing hyphens.
+5. If nothing remains after the rules above, return "untitled".
+6. The result is at most 60 characters; if truncation at 60 leaves a
+   trailing hyphen, remove it.
+Examples: "Hello, World!" -> "hello-world"; "Crème Brûlée" -> "creme-brulee".
