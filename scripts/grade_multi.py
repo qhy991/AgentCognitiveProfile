@@ -192,8 +192,8 @@ def grade_multi(workspace_dir, task_dir):
     m = score_minimality(workspace_dir, task_dir)
     q = score_quality(workspace_dir)
 
-    # Weighted overall score
-    overall = c * 0.4 + p * 0.25 + m * 0.2 + q * 0.15
+    # Weighted overall score (correctness most important)
+    overall = c * 0.5 + p * 0.2 + m * 0.15 + q * 0.15
 
     return {
         "correctness": round(c, 4),

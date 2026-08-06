@@ -1,0 +1,11 @@
+Our task scheduler (queue.py) has two issues in production:
+
+1. Low-priority tasks are being starved. When many high-priority tasks
+   are submitted, low-priority tasks wait indefinitely and never execute.
+   We need a mechanism to ensure all tasks eventually get processed.
+
+2. The queue has no size limit. Under heavy load, the queue can grow
+   to consume all available memory, causing the process to crash.
+
+The fix should be in queue.py. The TaskScheduler, PriorityQueue, and
+Task classes may all need changes to address both issues.

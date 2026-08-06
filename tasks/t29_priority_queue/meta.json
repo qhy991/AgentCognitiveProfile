@@ -1,0 +1,7 @@
+{
+  "id": "t29_priority_queue",
+  "type": "hard",
+  "n_hidden_tests": 5,
+  "timeout_grade": 120,
+  "grading": "multi"
+}
