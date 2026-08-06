@@ -1,0 +1,11 @@
+Our caching system (cache.py) has two performance issues in production:
+
+1. Cache key generation is slow — it uses json.dumps + hashlib.sha256
+   for every lookup, which adds significant overhead for simple lookups.
+
+2. The cache has no size limit — it grows unbounded, consuming more and
+   more memory until the process is restarted.
+
+We need both issues fixed. The correctness is fine — the cache returns
+correct values and handles TTL expiration correctly. The problems are
+purely in the performance characteristics of the implementation.
