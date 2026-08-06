@@ -22,23 +22,22 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from grade import grade_run  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
-EXPECTED_VARIANTS = {"control", "intj_label", "esfp_label",
-                     "intj_behavior", "esfp_behavior"}
 
 
 def check_variants():
     problems = []
-    files = {p.stem: p for p in (ROOT / "variants").glob("*.md")}
-    missing = EXPECTED_VARIANTS - set(files)
+    files = {p.stem[:4]: p for p in (ROOT / "variants").glob("p*.md")}
+    expected = {p.stem[:4] for p in (ROOT / "profiles").glob("p*.yaml")}
+    missing = expected - set(files)
     if missing:
         problems.append(f"missing variants: {sorted(missing)}")
-    sizes = {name: len(p.read_text()) for name, p in files.items()}
+    sizes = {p.stem: len(p.read_text()) for p in (ROOT / "variants").glob("p*.md")}
     if sizes:
         avg = sum(sizes.values()) / len(sizes)
         for name, size in sorted(sizes.items()):
             drift = (size - avg) / avg
             flag = "  <-- length drift >30%" if abs(drift) > 0.30 else ""
-            print(f"  variant {name:<15} {size:>5} chars ({drift:+.0%}){flag}")
+            print(f"  variant {name:<35} {size:>5} chars ({drift:+.0%}){flag}")
             if abs(drift) > 0.30:
                 problems.append(f"variant {name} length drifts {drift:+.0%}")
     return problems
