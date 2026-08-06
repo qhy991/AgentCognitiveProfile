@@ -1,0 +1,18 @@
+Our data processing pipeline is consuming way too much memory and running
+slowly on large datasets. When processing 2000 records, the pipeline takes
+over 1 second and uses hundreds of MB of memory.
+
+The issue: the pipeline code in pipeline.py uses `copy.deepcopy()` on every
+record at every stage. For N records and M stages, that's N*M deep copies,
+each creating a complete duplicate of the record and all nested data.
+
+The aggregation module in aggregate.py has the same problem — it deep-copies
+records before grouping them.
+
+The fix: remove unnecessary deep copies. The pipeline stages should modify
+records in-place or create shallow copies where needed. The correctness
+must be preserved — all computed fields (full_name, category, score) must
+still be added correctly.
+
+Files: pipeline.py (main fix), aggregate.py (also needs fix).
+generator.py is a test helper and doesn't need changes.

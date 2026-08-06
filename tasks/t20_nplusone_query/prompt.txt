@@ -1,0 +1,18 @@
+Our user management API is experiencing severe latency issues in production.
+The `get_users_by_ids` and `get_users_by_department` methods are making
+far too many database queries.
+
+Looking at the code in store.py, `get_users_by_ids` loops through each
+user ID and calls `fetch_one` individually — that's N queries for N users.
+Similarly, `get_users_by_department` fetches each user's manager with a
+separate query.
+
+For 100 users, this is 100+ individual database queries taking over 100ms,
+when it should be 1-2 batch queries taking < 10ms.
+
+The database layer (Database class in store.py) supports batch operations
+via `fetch_all`. The fix should batch queries to minimize the number of
+database round-trips. The report.py module uses these methods and should
+continue to work correctly after optimization.
+
+The helper module fixtures.py is used for testing only — the fix is in store.py.

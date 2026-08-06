@@ -1,0 +1,6 @@
+{
+  "id": "t21_deepcopy_abuse",
+  "type": "perf",
+  "n_hidden_tests": 5,
+  "timeout_grade": 120
+}

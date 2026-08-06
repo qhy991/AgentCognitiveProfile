@@ -1,0 +1,21 @@
+Our data ranking service is too slow for production use. When sorting
+and ranking 5000 records, it takes over 500ms, which is unacceptable
+for our real-time API.
+
+Two performance issues in sorter.py:
+
+1. **cmp_to_key abuse**: `sort_by_score` uses `functools.cmp_to_key` with
+   a comparison function that computes the score twice per comparison.
+   Python's `sorted()` with a `key=` function is much faster because it
+   computes the key once per element (O(n)) instead of twice per
+   comparison (O(n log n) * 2).
+
+2. **Full sort for top-N**: `top_n` sorts the entire list when it only
+   needs the top N elements. `heapq.nlargest` is O(n log k) instead of
+   O(n log n) for full sort.
+
+The fix: replace cmp functions with key functions, and use heapq for
+top-N queries. The correctness must be preserved — sorting order and
+ranking must remain identical.
+
+Files: sorter.py (main fix). generator.py is a test helper.
