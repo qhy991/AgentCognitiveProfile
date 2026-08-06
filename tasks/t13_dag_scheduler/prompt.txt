@@ -1,0 +1,12 @@
+Our pipeline scheduler is supposed to run tasks in dependency order, but
+we're getting reports that for complex pipelines with "diamond" shaped
+dependencies (where a task depends on two upstream tasks that both depend
+on the same root task), the scheduler sometimes runs a downstream task
+before all its upstream tasks have finished.
+
+The topological sort algorithm is in dag.py (the DAG class). The pipeline
+orchestrator is in pipeline.py. The bug is somewhere in how the topological
+ordering is computed or how levels are determined.
+
+We need the execution order to always respect ALL dependency edges — if
+task B depends on task A, then A must execute before B, no exceptions.

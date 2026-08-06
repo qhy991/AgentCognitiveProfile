@@ -1,0 +1,6 @@
+{
+  "id": "t12_config_deep_merge",
+  "type": "hard",
+  "n_hidden_tests": 5,
+  "timeout_grade": 120
+}

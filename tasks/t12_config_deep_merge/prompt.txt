@@ -1,0 +1,23 @@
+We have a configuration system that loads settings from YAML files and
+environment variables, merging them in priority order. The intention is
+that nested dicts should be deep-merged (so overriding one key doesn't
+wipe out sibling keys).
+
+But users are reporting that when they set a single nested key (e.g. via
+environment variable APP__DATABASE__HOST=prod), unrelated keys at the same
+nesting level disappear.
+
+For example, given base config:
+    database:
+      host: localhost
+      port: 5432
+      pool:
+        min: 2
+        max: 10
+
+and an override that only sets database.host, the result should keep
+port and pool intact. But right now the override replaces the entire
+"database" block, losing port, pool, and everything else.
+
+The merge logic is in config.py. The env var parser is in env.py, and
+file loaders are in loader.py.

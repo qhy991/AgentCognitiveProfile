@@ -1,0 +1,6 @@
+{
+  "id": "t14_template_escape",
+  "type": "hard",
+  "n_hidden_tests": 5,
+  "timeout_grade": 120
+}

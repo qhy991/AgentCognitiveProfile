@@ -1,0 +1,14 @@
+Our template engine has auto-escaping enabled by default, which means
+variables like {{ name }} should have their HTML characters escaped
+(&lt; for <, etc.). This works correctly in the main template.
+
+However, users are reporting that variables inside {% include %}d
+sub-templates are NOT being escaped. For example, if you have a parent
+template that includes a child template, and the child template renders
+a variable containing HTML, the HTML tags pass through unescaped.
+
+This is a potential XSS security issue. The escaping should be consistent
+across all templates, including included ones.
+
+The compiler is in compiler.py, context management is in context.py,
+and the template/loader is in template.py.

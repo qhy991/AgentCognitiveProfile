@@ -1,0 +1,24 @@
+# Default application configuration
+database:
+  host: localhost
+  port: 5432
+  name: myapp
+  pool:
+    min_size: 2
+    max_size: 10
+
+server:
+  host: 0.0.0.0
+  port: 8080
+  debug: false
+
+logging:
+  level: info
+  format: json
+  outputs:
+    - console
+    - file
+
+features:
+  caching: true
+  rate_limiting: false

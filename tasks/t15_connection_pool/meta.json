@@ -1,0 +1,6 @@
+{
+  "id": "t15_connection_pool",
+  "type": "hard",
+  "n_hidden_tests": 5,
+  "timeout_grade": 120
+}

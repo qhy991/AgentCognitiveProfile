@@ -1,0 +1,13 @@
+Our API client has a connection pool that manages a fixed number of
+reusable HTTP connections. When a request fails with a connection error,
+the connection is supposed to be discarded and replaced with a fresh one
+so the pool stays at full capacity.
+
+But after running for a while, we're getting "Connection pool exhausted"
+errors even though the traffic volume hasn't changed. It seems like the
+pool is slowly leaking connections — each error seems to permanently
+reduce the available pool size until there are no connections left.
+
+The pool logic is in pool.py. The client retry logic is in client.py.
+The issue is most likely in how unhealthy connections are handled when
+released back to the pool.

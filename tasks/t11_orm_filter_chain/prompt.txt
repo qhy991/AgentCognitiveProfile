@@ -1,0 +1,19 @@
+Our in-house micro-ORM has a query builder that supports chaining
+.filter() calls, but several users are reporting that when they chain
+multiple filters together, only the last filter seems to take effect.
+
+For example, code like:
+
+    db.query(User).filter(age=30).filter(active=True).all()
+
+should return users who are BOTH age 30 AND active, but it's currently
+returning all active users regardless of age — as if the first .filter()
+was ignored.
+
+The same issue affects operators like __gt, __lt, __gte, __lte, __ne,
+and __in — chaining any two filters loses the first one.
+
+We need this fixed. The query builder is in query.py, and the rest of
+the ORM is in the other files in this directory. The ORM uses an
+in-memory Database (see db.py) and models are defined with Field
+descriptors (see models.py, fields.py).

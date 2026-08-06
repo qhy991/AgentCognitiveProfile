@@ -1,0 +1,6 @@
+{
+  "id": "t13_dag_scheduler",
+  "type": "hard",
+  "n_hidden_tests": 5,
+  "timeout_grade": 120
+}
