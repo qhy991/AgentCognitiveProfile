@@ -1,0 +1,17 @@
+Our thread pool (pool.py) has a deadlock issue. When a task running
+inside the pool calls `execute_and_wait` to submit a subtask, it can
+deadlock if all worker threads are busy.
+
+Scenario: Pool has 2 workers. Task A runs on worker 1 and calls
+execute_and_wait for task B. Task B is submitted to the queue.
+Worker 2 picks up task B. But if worker 2 is also busy, task B
+never runs, and task A waits forever — deadlock.
+
+The fix: when `execute_and_wait` is called from within a pool worker
+thread, it should execute the subtask directly on the current thread
+instead of submitting it to the queue. This prevents the deadlock
+because the worker thread is actively doing work.
+
+The fix is in pool.py. The Task class and the queue mechanism are
+correct — the issue is in how execute_and_wait decides whether to
+submit to the queue or execute directly.

@@ -1,0 +1,19 @@
+Our accounting system is producing incorrect financial reports. The issue
+is in calculator.py: all monetary calculations use Python's float type,
+which causes floating-point precision errors. For example, 0.1 + 0.2 != 0.3
+in floating point, and over hundreds of transactions these errors accumulate.
+
+The symptoms:
+- Invoice totals are sometimes off by 1 cent
+- `split_payment(100, 3)` produces installments that sum to 99.99
+- The payment ledger balance drifts from zero over time
+
+The trap: adding `round(x, 2)` everywhere masks the symptoms but doesn't
+fix the root cause. The accumulated errors still exist in intermediate
+calculations and can cause incorrect rounding.
+
+The correct fix: replace float with `Decimal` from Python's `decimal`
+module for all monetary values. Use `Decimal(str(value))` for conversion
+to avoid float→Decimal precision issues. Use `quantize()` for rounding.
+
+The invoice model in invoice.py is correct — the fix is only in calculator.py.

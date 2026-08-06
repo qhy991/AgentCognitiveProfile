@@ -1,0 +1,15 @@
+Our tree library (tree.py) crashes with RecursionError when processing
+deep trees. The production data pipeline sometimes generates trees with
+depth > 1000, and all recursive functions (tree_depth, tree_sum, count_nodes,
+find_node) overflow the Python call stack.
+
+The trap: increasing `sys.setrecursionlimit()` masks the problem but
+doesn't fix it — a tree of depth 10000 would still overflow, and the
+higher limit causes crashes instead of clean errors.
+
+The correct fix: convert all recursive functions to iterative versions
+using an explicit stack (list or deque). Each function must produce
+identical results to the recursive version for all tree shapes.
+
+The fix is in tree.py. The TreeNode class and build_deep_tree are
+correct — only the four recursive functions need to be converted.
