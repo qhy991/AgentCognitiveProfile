@@ -35,6 +35,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from behavior_metrics import extract_metrics  # noqa: E402
 from grade import grade_run  # noqa: E402
+from grade_multi import grade_multi  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 ALLOWED_TOOLS = "Bash,Read,Write,Edit,MultiEdit,Glob,Grep,LS,TodoWrite"
@@ -108,9 +109,21 @@ def run_one(task_dir, variant_path, rep, args):
     wall_s = round(time.time() - t0, 1)
 
     result_ev = parse_result_line(transcript)
-    scores = grade_run(ws, task_dir)
-    behavior = extract_metrics(transcript)
     meta = json.loads((task_dir / "meta.json").read_text())
+
+    # Use multi-dimension grading if task specifies it
+    if meta.get("grading") == "multi":
+        scores = grade_multi(ws, task_dir)
+        hidden_frac = scores["overall"]
+        hidden_passed = -1  # multi-dimension doesn't have pass/fail counts
+        hidden_total = -1
+    else:
+        scores = grade_run(ws, task_dir)
+        hidden_frac = scores["hidden"]["frac"]
+        hidden_passed = scores["hidden"]["passed"]
+        hidden_total = scores["hidden"]["total"]
+
+    behavior = extract_metrics(transcript)
 
     record = {
         "run_id": run_id,
@@ -119,10 +132,10 @@ def run_one(task_dir, variant_path, rep, args):
         "variant": variant,
         "rep": rep,
         "model": behavior.get("model") or args.model,
-        "hidden_frac": scores["hidden"]["frac"],
-        "hidden_passed": scores["hidden"]["passed"],
-        "hidden_total": scores["hidden"]["total"],
-        "visible_frac": (scores["visible"] or {}).get("frac"),
+        "hidden_frac": hidden_frac,
+        "hidden_passed": hidden_passed,
+        "hidden_total": hidden_total,
+        "visible_frac": (scores.get("visible") or {}).get("frac") if isinstance(scores, dict) and "visible" in scores else None,
         "timed_out": timed_out,
         "agent_exit_code": exit_code,
         "agent_is_error": result_ev.get("is_error"),
@@ -132,6 +145,15 @@ def run_one(task_dir, variant_path, rep, args):
         "wall_s": wall_s,
         "behavior": behavior,
     }
+    # Add multi-dimension scores if available
+    if isinstance(scores, dict) and "correctness" in scores:
+        record["multi_scores"] = {
+            "correctness": scores["correctness"],
+            "performance": scores["performance"],
+            "minimality": scores["minimality"],
+            "quality": scores["quality"],
+            "overall": scores["overall"],
+        }
     record_path.write_text(json.dumps(record, indent=2))
     return run_id, (f"hidden={record['hidden_frac']:.2f} "
                     f"turns={record['num_turns']} timeout={timed_out}")
