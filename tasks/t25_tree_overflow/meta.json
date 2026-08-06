@@ -2,5 +2,6 @@
   "id": "t25_tree_overflow",
   "type": "hard",
   "n_hidden_tests": 5,
-  "timeout_grade": 120
+  "timeout_grade": 120,
+  "grading": "multi"
 }

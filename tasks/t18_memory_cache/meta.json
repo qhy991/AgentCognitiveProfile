@@ -2,5 +2,6 @@
   "id": "t18_memory_cache",
   "type": "perf",
   "n_hidden_tests": 5,
-  "timeout_grade": 120
+  "timeout_grade": 120,
+  "grading": "multi"
 }
