@@ -1,0 +1,16 @@
+Our data deduplication module in dedup.py is used in a critical ETL
+pipeline that processes millions of records. Recently, as data volume
+has grown, the pipeline has become extremely slow.
+
+Profiling reveals that `deduplicate_by_key()` is the bottleneck.
+It uses a list (`seen_keys`) to track observed keys, and calls
+`key not in seen_keys` which does an O(n) linear scan. With N items,
+this makes the function O(n²).
+
+For 10,000 records, it takes about 0.5 seconds. For 100,000 records
+(which we now handle), it takes over 30 seconds.
+
+The fix is to replace the list-based tracking with a set-based
+approach. Both `deduplicate()` and `deduplicate_by_key()` need
+to be updated. The correctness must be preserved — order must be
+maintained and the first occurrence of each key must be kept.

@@ -1,0 +1,15 @@
+Our report generation pipeline uses StringBuffer (in buffer.py) to
+build large markdown reports. Lately, reports with many prepended
+elements (like auto-generated tables of contents) have become
+extremely slow.
+
+The issue is in `StringBuffer.prepend()` — it uses `list.insert(0, text)`
+which is O(n) per call. When building a report with 5000 prepend
+operations, this becomes O(n²) and takes several seconds.
+
+The `ReportBuilder.prepend_toc()` method is the main caller — it
+prepends TOC entries one by one, each triggering an O(n) list insert.
+
+The fix should optimize the prepend operation to be O(1) amortized.
+The rest of the buffer and report builder should work exactly as before.
+The fix is in buffer.py.

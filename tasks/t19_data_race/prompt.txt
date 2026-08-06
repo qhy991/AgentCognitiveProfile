@@ -1,0 +1,15 @@
+We have a Counter class that's supposed to be thread-safe, but we're
+seeing duplicate values and incorrect counts under concurrent load.
+
+The issue is in `get_and_increment()` in counter.py. This method is
+supposed to atomically return the current value and then increment,
+but there's a subtle race condition: the lock is released between
+reading the value and incrementing it, allowing another thread to
+sneak in and modify the value.
+
+The fix should ensure that both the read and the increment happen
+within the same lock scope. The helper modules are in lock.py and
+worker.py — the bug is only in counter.py.
+
+To reproduce: run multiple threads calling get_and_increment() and
+check for duplicate return values or incorrect final count.

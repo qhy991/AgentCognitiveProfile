@@ -1,0 +1,14 @@
+Our TTL cache in cache.py has a memory leak. When entries expire,
+they are not actually removed from the internal dict — get() returns
+None for expired entries but doesn't delete them. Over time, the cache
+fills up with stale entries, and new puts start evicting valid entries
+while expired ones accumulate.
+
+The fix needs to ensure that expired entries are cleaned up. The
+`cleanup_expired()` method exists but is never called automatically.
+The get() and put() methods should proactively remove expired entries
+when they encounter them.
+
+The cache module is in cache.py, with helpers in eviction.py and stats.py.
+The fix should be in cache.py — the eviction policy and stats tracking
+are working correctly.
