@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agent 认知画像实验 — 完整分析报告</title>
+<script src="https://cdn.plot.ly/plotly-3.0.0.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif; background: #0f1117; color: #e1e4e8; }
+  .container { max-width: 1500px; margin: 0 auto; padding: 24px; }
+  h1 { font-size: 26px; margin-bottom: 4px; color: #f0f6fc; }
+  h2 { font-size: 18px; color: #58a6ff; margin: 24px 0 12px; }
+  .subtitle { font-size: 14px; color: #8b949e; margin-bottom: 24px; }
+  .stats { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; margin-bottom: 24px; }
+  .stat { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 16px; text-align: center; }
+  .stat .value { font-size: 28px; font-weight: 700; color: #58a6ff; }
+  .stat .label { font-size: 12px; color: #8b949e; margin-top: 4px; }
+  table { width: 100%; border-collapse: collapse; background: #161b22; border: 1px solid #30363d; border-radius: 8px; overflow: hidden; margin-bottom: 16px; }
+  th { background: #21262d; padding: 10px 12px; text-align: left; font-size: 12px; color: #8b949e; font-weight: 600; white-space: nowrap; }
+  td { padding: 8px 12px; font-size: 13px; border-top: 1px solid #30363d; white-space: nowrap; }
+  tr:hover td { background: #1c2128; }
+  .best { color: #3fb950; font-weight: 600; }
+  .worst { color: #f85149; font-weight: 600; }
+  .task-section { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 20px; margin-bottom: 16px; }
+  .task-section h3 { font-size: 16px; margin-bottom: 4px; }
+  .task-section .meta { font-size: 12px; color: #8b949e; margin-bottom: 12px; }
+  .chart-box { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 16px; margin-bottom: 16px; }
+  .chart-box h3 { font-size: 14px; color: #8b949e; margin-bottom: 8px; }
+  .explain { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 20px; margin-bottom: 24px; }
+  .explain .axes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .explain .axis { background: #0d1117; border: 1px solid #21262d; border-radius: 6px; padding: 14px; }
+  .explain .axis h4 { font-size: 14px; margin-bottom: 6px; }
+  .explain .axis p { font-size: 12px; color: #8b949e; line-height: 1.6; }
+  .val-0 { background: #1a2332; color: #58a6ff; padding: 2px 8px; border-radius: 4px; font-size: 11px; }
+  .val-1 { background: #2a1a2e; color: #d29922; padding: 2px 8px; border-radius: 4px; font-size: 11px; }
+  .key-finding { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 20px; }
+  .key-finding ol { padding-left: 20px; font-size: 14px; line-height: 2; color: #c9d1d9; }
+  .key-finding li strong { color: #58a6ff; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Agent 认知画像实验 — 完整分析报告</h1>
+  <p class="subtitle">8 种认知画像 × 5 个任务 × 3 次重复 = 120 次运行 | 多维度评分系统</p>
+
+  <div class="explain">
+    <h2>认知画像三维空间</h2>
+    <div class="axes">
+      <div class="axis"><h4 style="color:#58a6ff">探索（Exploration）</h4><p><span class="val-0">0=保守</span> 最小改动<br><span class="val-1">1=探索</span> 多方案重构</p></div>
+      <div class="axis"><h4 style="color:#d29922">思考（Thinking）</h4><p><span class="val-0">0=行动优先</span> 先动手<br><span class="val-1">1=思考优先</span> 先分析</p></div>
+      <div class="axis"><h4 style="color:#a371f7">适应（Adaptation）</h4><p><span class="val-0">0=坚持己见</span> 不轻易改变<br><span class="val-1">1=灵活适应</span> 根据反馈调整</p></div>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="value">5</div><div class="label">任务</div></div>
+    <div class="stat"><div class="value">8</div><div class="label">认知画像</div></div>
+    <div class="stat"><div class="value">120</div><div class="label">总运行次数</div></div>
+    <div class="stat"><div class="value">0.65–0.96</div><div class="label">得分范围</div></div>
+    <div class="stat"><div class="value">2.6×</div><div class="label">叙述差异</div></div>
+    <div class="stat"><div class="value">1.8×</div><div class="label">改动量差异</div></div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px;">
+    <div class="chart-box"><h3>性能得分（正确率）<span style="font-size:11px;color:#8b949e"> 红73%→橙87%→黄93%→绿100%</span></h3><div id="plot3d_perf" style="height:420px;"></div></div>
+    <div class="chart-box"><h3>成本（API费用）<span style="font-size:11px;color:#8b949e"> 绿$0.25→黄$0.60→红$1.16</span></h3><div id="plot3d_cost" style="height:420px;"></div></div>
+    <div class="chart-box"><h3>综合得分<span style="font-size:11px;color:#8b949e"> 正确×50%+性能×20%+改动×15%+质量×15%</span></h3><div id="plot3d_overall" style="height:420px;"></div></div>
+  </div>
+
+  <h2>综合汇总表（5 任务 × 8 画像）</h2>
+  <div style="overflow-x:auto;"><table id="summary_all"></table></div>
+
+  <h2>各任务详细结果（含成本）</h2>
+  <div id="task_details"></div>
+
+  <div class="key-finding">
+    <h2 style="color:#3fb950;">关键发现</h2>
+    <ol>
+      <li><strong>保守实干家 (0,0,0) 综合最优</strong>：平均 88%，改动最少（59%），轮次最少（12.5），成本最低（$0.52）</li>
+      <li><strong>完美架构师 (1,1,0) 成本最高但效率不高</strong>：轮次最多（18.7），成本最高（$0.71），叙述 2.6 倍</li>
+      <li><strong>多维度评分是唯一有效区分方法</strong>：二元评分 0% 区分度，多维度 100% 区分度</li>
+      <li><strong>t29 区分度最大</strong>：得分 0.65–0.91，p010 仅 75%（正确率 73%）</li>
+      <li><strong>t22 已被"破解"</strong>：全部 0.96，简单任务上认知差异不体现</li>
+    </ol>
+  </div>
+</div>
+
+<script>
+const DATA=[{id:"p000",name:"保守实干家",name_en:"Conservative Doer",E:0,T:0,A:0,overall:0.88,correctness:0.99,minimality:0.59,turns:12.5,cost:0.52,narration:928,reads:3.2},{id:"p001",name:"敏捷修补匠",name_en:"Adaptive Fixer",E:0,T:0,A:1,overall:0.86,correctness:1.00,minimality:0.49,turns:15.4,cost:0.61,narration:1377,reads:4.8},{id:"p010",name:"严谨执行者",name_en:"Methodical Executor",E:0,T:1,A:0,overall:0.84,correctness:0.95,minimality:0.47,turns:15.1,cost:0.65,narration:1833,reads:5.5},{id:"p011",name:"审慎调试者",name_en:"Careful Debugger",E:0,T:1,A:1,overall:0.87,correctness:1.00,minimality:0.53,turns:14.8,cost:0.59,narration:1320,reads:5.2},{id:"p100",name:"激进黑客",name_en:"Aggressive Hacker",E:1,T:0,A:0,overall:0.85,correctness:0.99,minimality:0.46,turns:14.1,cost:0.62,narration:1228,reads:4.4},{id:"p101",name:"灵活探索者",name_en:"Flexible Explorer",E:1,T:0,A:1,overall:0.86,correctness:1.00,minimality:0.43,turns:15.1,cost:0.65,narration:1680,reads:4.9},{id:"p110",name:"完美架构师",name_en:"Perfectionist Architect",E:1,T:1,A:0,overall:0.85,correctness:1.00,minimality:0.41,turns:18.7,cost:0.71,narration:2451,reads:6.6},{id:"p111",name:"全面创新者",name_en:"Full Innovator",E:1,T:1,A:1,overall:0.84,correctness:0.97,minimality:0.43,turns:16.2,cost:0.67,narration:1942,reads:6.5}];
+const TASKS={t22:{name:"排序键性能优化",desc:"cmp_to_key+全量排序→key函数+heapq",type:"perf",scores:[0.96,0.96,0.96,0.96,0.96,0.96,0.96,0.96],costs:[0.28,0.25,0.47,0.38,0.30,0.26,0.40,0.41],turns:[8.7,7.7,14.0,11.0,9.3,8.7,11.3,12.7],minimal:[1.00,1.00,1.00,1.00,1.00,1.00,1.00,1.00],correct:[1.00,1.00,1.00,1.00,1.00,1.00,1.00,1.00]},t23:{name:"货币精度",desc:"float→Decimal避免浮点误差",type:"hard",scores:[0.83,0.80,0.80,0.82,0.78,0.78,0.77,0.77],costs:[0.60,0.72,0.77,0.79,0.81,0.71,0.66,0.67],turns:[10.7,16.7,15.7,14.3,14.3,14.7,17.0,14.3],minimal:[0.35,0.18,0.18,0.27,0.14,0.05,0.06,0.03],correct:[1.00,1.00,1.00,1.00,1.00,1.00,1.00,1.00]},t24:{name:"线程池死锁",desc:"嵌套任务提交导致死锁",type:"hard",scores:[0.95,0.91,0.90,0.93,0.89,0.88,0.89,0.88],costs:[0.46,0.70,0.57,0.71,0.68,0.66,0.97,0.79],turns:[10.7,18.3,16.0,19.0,15.3,16.7,19.0,18.0],minimal:[0.77,0.55,0.65,0.72,0.52,0.48,0.50,0.61],correct:[1.00,1.00,1.00,1.00,1.00,1.00,1.00,1.00]},t25:{name:"树溢出",desc:"递归→迭代避免栈溢出",type:"hard",scores:[0.77,0.77,0.77,0.77,0.77,0.78,0.76,0.77],costs:[0.52,0.52,0.49,0.47,0.45,0.45,0.58,0.54],turns:[13.7,13.7,15.0,13.3,13.0,15.3,23.3,15.3],minimal:[0.24,0.22,0.21,0.21,0.22,0.27,0.19,0.21],correct:[1.00,1.00,1.00,1.00,1.00,1.00,1.00,1.00]},t29:{name:"优先级队列",desc:"饥饿防护+内存限制",type:"hard",scores:[0.87,0.88,0.75,0.88,0.85,0.88,0.86,0.80],costs:[0.72,0.86,0.94,0.59,0.88,1.16,0.96,0.93],turns:[18.7,20.7,14.7,16.3,18.3,20.0,23.0,20.7],minimal:[0.58,0.47,0.33,0.47,0.44,0.37,0.31,0.30],correct:[0.93,1.00,0.73,1.00,0.93,1.00,1.00,0.87]}};
+const NAMES=DATA.map(d=>d.name);
+function sc(s){if(s>=0.88)return'#3fb950';if(s>=0.86)return'#58a6ff';if(s>=0.85)return'#d29922';return'#f85149';}
+function ce(v,b,w,f,i){let c='';if(i?v<=b*1.01:v>=b*0.99)c='best';else if(i?v>=w*0.99:v<=w*1.01)c='worst';return'<td class="'+c+'">'+(typeof f==='function'?f(v):v)+'</td>';}
+function mkce(){return[{x:[0,0],y:[0,1],z:[0,0]},{x:[0,1],y:[1,1],z:[0,0]},{x:[1,1],y:[1,0],z:[0,0]},{x:[1,0],y:[0,0],z:[0,0]},{x:[0,0],y:[0,1],z:[1,1]},{x:[0,1],y:[1,1],z:[1,1]},{x:[1,1],y:[1,0],z:[1,1]},{x:[1,0],y:[0,0],z:[1,1]},{x:[0,0],y:[0,0],z:[0,1]},{x:[0,0],y:[1,1],z:[0,1]},{x:[1,1],y:[1,1],z:[0,1]},{x:[1,1],y:[0,0],z:[0,1]}].map(e=>({x:e.x,y:e.y,z:e.z,mode:'lines',type:'scatter3d',line:{color:'#30363d',width:1,dash:'dash'},showlegend:false,hoverinfo:'none'}));}
+function ms(){return{xaxis:{title:'探索',tickvals:[0,1],ticktext:['保守','探索'],range:[-0.3,1.3],gridcolor:'#30363d',color:'#8b949e'},yaxis:{title:'思考',tickvals:[0,1],ticktext:['行动','思考'],range:[-0.3,1.3],gridcolor:'#30363d',color:'#8b949e'},zaxis:{title:'适应',tickvals:[0,1],ticktext:['坚持','适应'],range:[-0.3,1.3],gridcolor:'#30363d',color:'#8b949e'},bgcolor:'#161b22',camera:{eye:{x:1.5,y:1.5,z:1.2}}};}
+Plotly.newPlot('plot3d_perf',[...mkce(),...DATA.map(d=>({x:[d.E],y:[d.T],z:[d.A],mode:'markers+text',type:'scatter3d',name:d.name,text:d.name,textposition:'top center',textfont:{size:10,color:'#e1e4e8'},marker:{size:d.correctness*25,color:d.correctness>=1?'#3fb950':d.correctness>=0.95?'#d29922':'#f85149',opacity:0.9,line:{color:'#30363d',width:1}},hovertemplate:'<b>'+d.name+'</b><br>正确率:'+(d.correctness*100).toFixed(0)+'%<extra></extra>'}))],{scene:ms(),paper_bgcolor:'#161b22',plot_bgcolor:'#161b22',font:{color:'#e1e4e8'},margin:{l:0,r:0,t:0,b:0},showlegend:false},{responsive:true});
+Plotly.newPlot('plot3d_cost',[...mkce(),...DATA.map(d=>({x:[d.E],y:[d.T],z:[d.A],mode:'markers+text',type:'scatter3d',name:d.name,text:d.name,textposition:'top center',textfont:{size:10,color:'#e1e4e8'},marker:{size:d.cost*35,color:d.cost<=0.55?'#3fb950':d.cost>=0.68?'#f85149':'#d29922',opacity:0.9,line:{color:'#30363d',width:1}},hovertemplate:'<b>'+d.name+'</b><br>成本:$'+d.cost.toFixed(2)+'<extra></extra>'}))],{scene:ms(),paper_bgcolor:'#161b22',plot_bgcolor:'#161b22',font:{color:'#e1e4e8'},margin:{l:0,r:0,t:0,b:0},showlegend:false},{responsive:true});
+Plotly.newPlot('plot3d_overall',[...mkce(),...DATA.map(d=>({x:[d.E],y:[d.T],z:[d.A],mode:'markers+text',type:'scatter3d',name:d.name,text:d.name,textposition:'top center',textfont:{size:10,color:'#e1e4e8'},marker:{size:d.overall*35,color:sc(d.overall),opacity:0.9,line:{color:'#30363d',width:1}},hovertemplate:'<b>'+d.name+'</b><br>综合:'+(d.overall*100).toFixed(0)+'%<extra></extra>'}))],{scene:ms(),paper_bgcolor:'#161b22',plot_bgcolor:'#161b22',font:{color:'#e1e4e8'},margin:{l:0,r:0,t:0,b:0},showlegend:false},{responsive:true});
+// Summary table
+let oV=DATA.map(d=>d.overall),cV=DATA.map(d=>d.cost),tV=DATA.map(d=>d.turns);
+let bO=Math.max(...oV),wO=Math.min(...oV),bC=Math.min(...cV),wC=Math.max(...cV),bT=Math.min(...tV),wT=Math.max(...tV);
+let h='<tr><th>画像</th><th>向量</th><th>综合得分</th><th>正确率</th><th>改动量</th><th>轮次</th><th>成本</th><th>叙述</th><th>阅读</th></tr>';
+DATA.forEach(d=>{h+='<tr><td><b>'+d.name+'</b><br><span style="font-size:11px;color:#8b949e">'+d.name_en+'</span></td><td style="font-family:monospace">('+d.E+','+d.T+','+d.A+')</td>'+ce(d.overall,bO,wO,v=>(v*100).toFixed(0)+'%',false)+ce(d.correctness,1.0,0.95,v=>(v*100).toFixed(0)+'%',false)+ce(d.minimality,0.59,0.41,v=>(v*100).toFixed(0)+'%',false)+ce(d.turns,bT,wT,v=>v.toFixed(1),true)+ce(d.cost,bC,wC,v=>'$'+v.toFixed(2),true)+'<td>'+(d.narration/1000).toFixed(1)+'k</td><td>'+d.reads.toFixed(1)+'</td></tr>';});
+document.getElementById('summary_all').innerHTML=h;
+// Task details
+let th='';
+Object.keys(TASKS).forEach(tk=>{let t=TASKS[tk];let mnS=Math.min(...t.scores),mxS=Math.max(...t.scores),mnC=Math.min(...t.costs),mxC=Math.max(...t.costs);th+='<div class="task-section"><h3>'+tk+' — '+t.name+' <span style="font-size:13px;color:#8b949e">('+t.type+')</span></h3><p class="meta">'+t.desc+' | 得分: '+mnS.toFixed(2)+'–'+mxS.toFixed(2)+' | 成本: $'+mnC.toFixed(2)+'–$'+mxC.toFixed(2)+'</p><div style="overflow-x:auto;"><table><tr><th>画像</th><th>向量</th><th>综合得分</th><th>正确率</th><th>改动量</th><th>轮次</th><th>成本</th></tr>';NAMES.forEach((n,i)=>{let s=t.scores[i],c=t.costs[i],tu=t.turns[i],m=t.minimal[i],co=t.correct[i];th+='<tr><td><b>'+n+'</b></td><td style="font-family:monospace">('+DATA[i].E+','+DATA[i].T+','+DATA[i].A+')</td><td class="'+(s>=mxS*0.99?'best':s<=mnS*1.01?'worst':'')+'">'+(s*100).toFixed(0)+'%</td><td>'+(co*100).toFixed(0)+'%</td><td>'+(m*100).toFixed(0)+'%</td><td>'+tu.toFixed(1)+'</td><td class="'+(c<=mnC*1.05?'best':c>=mxC*0.95?'worst':'')+'">$'+c.toFixed(2)+'</td></tr>';});th+='</table></div></div>';});
+document.getElementById('task_details').innerHTML=th;
+</script>
+</body>
+</html>
