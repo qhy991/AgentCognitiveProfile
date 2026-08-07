@@ -88,17 +88,38 @@
 
   <!-- 三个 3D 散点图 -->
   <div class="grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom:24px;">
-    <div class="chart" style="height:520px;">
+    <div class="chart" style="height:560px;">
       <h3>性能得分（正确率）</h3>
-      <div id="plot3d_perf" style="height:460px;"></div>
+      <div style="display:flex;gap:12px;font-size:11px;color:#8b949e;margin-bottom:4px;">
+        <span><span style="color:#f85149">●</span> 95%</span>
+        <span><span style="color:#f0883e">●</span> 97%</span>
+        <span><span style="color:#d29922">●</span> 99%</span>
+        <span><span style="color:#3fb950">●</span> 100%</span>
+        <span style="margin-left:8px;color:#58a6ff">球体大小 = 正确率</span>
+      </div>
+      <div id="plot3d_perf" style="height:490px;"></div>
     </div>
-    <div class="chart" style="height:520px;">
+    <div class="chart" style="height:560px;">
       <h3>成本（API 费用）</h3>
-      <div id="plot3d_cost" style="height:460px;"></div>
+      <div style="display:flex;gap:12px;font-size:11px;color:#8b949e;margin-bottom:4px;">
+        <span><span style="color:#3fb950">●</span> 便宜 ($0.52)</span>
+        <span><span style="color:#d29922">●</span> 中等 ($0.62)</span>
+        <span><span style="color:#f85149">●</span> 昂贵 ($0.71)</span>
+        <span style="margin-left:8px;color:#58a6ff">球体大小 = API 费用</span>
+      </div>
+      <div id="plot3d_cost" style="height:490px;"></div>
     </div>
-    <div class="chart" style="height:520px;">
+    <div class="chart" style="height:560px;">
       <h3>综合得分（加权）</h3>
-      <div id="plot3d_overall" style="height:460px;"></div>
+      <div style="display:flex;gap:12px;font-size:11px;color:#8b949e;margin-bottom:4px;">
+        <span><span style="color:#3fb950">●</span> 88% (最优)</span>
+        <span><span style="color:#58a6ff">●</span> 86-87%</span>
+        <span><span style="color:#d29922">●</span> 85%</span>
+        <span><span style="color:#f85149">●</span> 84% (最低)</span>
+        <span style="margin-left:8px;color:#58a6ff">球体大小 = 综合得分</span>
+      </div>
+      <div style="font-size:10px;color:#8b949e;margin-bottom:4px;">加权公式: 正确性×50% + 性能×20% + 改动量×15% + 质量×15%</div>
+      <div id="plot3d_overall" style="height:470px;"></div>
     </div>
   </div>
 
