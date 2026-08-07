@@ -86,10 +86,20 @@
     <div class="stat"><div class="value">1.8×</div><div class="label">改动量差异（p000 vs p110）</div></div>
   </div>
 
-  <!-- 3D 散点图 -->
-  <div class="chart" style="margin-bottom:24px; height:620px;">
-    <h3>三维认知空间：探索 × 思考 × 适应（颜色 = 综合得分，大小 = 成本）</h3>
-    <div id="plot3d" style="height:560px;"></div>
+  <!-- 三个 3D 散点图 -->
+  <div class="grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom:24px;">
+    <div class="chart" style="height:520px;">
+      <h3>性能得分（正确率）</h3>
+      <div id="plot3d_perf" style="height:460px;"></div>
+    </div>
+    <div class="chart" style="height:520px;">
+      <h3>成本（API 费用）</h3>
+      <div id="plot3d_cost" style="height:460px;"></div>
+    </div>
+    <div class="chart" style="height:520px;">
+      <h3>综合得分（加权）</h3>
+      <div id="plot3d_overall" style="height:460px;"></div>
+    </div>
   </div>
 
   <!-- 四个对比图 -->
@@ -156,61 +166,85 @@ function scoreColor(s) {
   return '#f85149';
 }
 
-// === 3D 散点图 ===
-// Add cube edges to show the cognitive space clearly
-const cubeEdges = [
-  // Bottom face (E-T plane, A=0)
-  {x:[0,0],y:[0,1],z:[0,0]}, {x:[0,1],y:[1,1],z:[0,0]}, {x:[1,1],y:[1,0],z:[0,0]}, {x:[1,0],y:[0,0],z:[0,0]},
-  // Top face (E-T plane, A=1)
-  {x:[0,0],y:[0,1],z:[1,1]}, {x:[0,1],y:[1,1],z:[1,1]}, {x:[1,1],y:[1,0],z:[1,1]}, {x:[1,0],y:[0,0],z:[1,1]},
-  // Vertical edges
-  {x:[0,0],y:[0,0],z:[0,1]}, {x:[0,0],y:[1,1],z:[0,1]}, {x:[1,1],y:[1,1],z:[0,1]}, {x:[1,1],y:[0,0],z:[0,1]},
-];
+// === 三个 3D 散点图 ===
+// 共享的立方体边框
+function makeCubeEdges() {
+  return [
+    {x:[0,0],y:[0,1],z:[0,0]}, {x:[0,1],y:[1,1],z:[0,0]}, {x:[1,1],y:[1,0],z:[0,0]}, {x:[1,0],y:[0,0],z:[0,0]},
+    {x:[0,0],y:[0,1],z:[1,1]}, {x:[0,1],y:[1,1],z:[1,1]}, {x:[1,1],y:[1,0],z:[1,1]}, {x:[1,0],y:[0,0],z:[1,1]},
+    {x:[0,0],y:[0,0],z:[0,1]}, {x:[0,0],y:[1,1],z:[0,1]}, {x:[1,1],y:[1,1],z:[0,1]}, {x:[1,1],y:[0,0],z:[0,1]},
+  ].map(e => ({
+    x: e.x, y: e.y, z: e.z,
+    mode: 'lines', type: 'scatter3d',
+    line: {color: '#30363d', width: 1, dash: 'dash'},
+    showlegend: false, hoverinfo: 'none',
+  }));
+}
 
-const edgeTraces = cubeEdges.map((e, i) => ({
-  x: e.x, y: e.y, z: e.z,
-  mode: 'lines',
-  type: 'scatter3d',
-  line: {color: '#30363d', width: 1, dash: 'dash'},
-  showlegend: false,
-  hoverinfo: 'none',
-}));
-
-const traces3d = [
-  ...edgeTraces,
-  ...DATA.map(d => ({
-    x: [d.E], y: [d.T], z: [d.A],
-    mode: 'markers+text',
-    type: 'scatter3d',
-    name: d.name,
-    text: d.name,
-    textposition: 'top center',
-    textfont: {size: 12, color: '#e1e4e8'},
-    marker: {
-      size: d.cost * 35,
-      color: scoreColor(d.overall),
-      opacity: 0.9,
-      line: {color: '#30363d', width: 1}
-    },
-    hovertemplate: `<b>${d.name}</b>（${d.name_en}）<br>向量: (${d.E},${d.T},${d.A})<br>综合得分: ${(d.overall*100).toFixed(0)}%<br>改动量: ${(d.minimality*100).toFixed(0)}%（越高改动越少）<br>对话轮次: ${d.turns.toFixed(1)}<br>成本: $${d.cost.toFixed(2)}<extra></extra>`
-  }))
-];
-
-Plotly.newPlot('plot3d', traces3d, {
-  scene: {
-    xaxis: {title: '探索程度', tickvals: [0, 1], ticktext: ['保守', '探索'], range: [-0.3, 1.3], gridcolor: '#30363d', color: '#8b949e', titlefont: {size: 13}},
-    yaxis: {title: '思考偏好', tickvals: [0, 1], ticktext: ['行动', '思考'], range: [-0.3, 1.3], gridcolor: '#30363d', color: '#8b949e', titlefont: {size: 13}},
-    zaxis: {title: '适应能力', tickvals: [0, 1], ticktext: ['坚持', '适应'], range: [-0.3, 1.3], gridcolor: '#30363d', color: '#8b949e', titlefont: {size: 13}},
+function make3DScene() {
+  return {
+    xaxis: {title: '探索', tickvals: [0, 1], ticktext: ['保守', '探索'], range: [-0.3, 1.3], gridcolor: '#30363d', color: '#8b949e'},
+    yaxis: {title: '思考', tickvals: [0, 1], ticktext: ['行动', '思考'], range: [-0.3, 1.3], gridcolor: '#30363d', color: '#8b949e'},
+    zaxis: {title: '适应', tickvals: [0, 1], ticktext: ['坚持', '适应'], range: [-0.3, 1.3], gridcolor: '#30363d', color: '#8b949e'},
     bgcolor: '#161b22',
     camera: {eye: {x: 1.5, y: 1.5, z: 1.2}},
-  },
-  paper_bgcolor: '#161b22',
-  plot_bgcolor: '#161b22',
-  font: {color: '#e1e4e8'},
-  margin: {l: 0, r: 0, t: 0, b: 0},
-  showlegend: false,
-  hovermode: 'closest',
-}, {responsive: true});
+  };
+}
+
+function makeHover(d, metric, unit) {
+  return `<b>${d.name}</b>（${d.name_en}）<br>向量: (${d.E},${d.T},${d.A})<br>${metric}: ${typeof d[unit] === 'number' ? d[unit].toFixed(2) : d[unit]}<br>综合得分: ${(d.overall*100).toFixed(0)}%<br>成本: $${d.cost.toFixed(2)}<extra></extra>`;
+}
+
+// 图1: 性能得分（正确率）
+const perfColors = ['#f85149','#f0883e','#d29922','#58a6ff','#3fb950','#3fb950','#3fb950','#3fb950'];
+Plotly.newPlot('plot3d_perf', [
+  ...makeCubeEdges(),
+  ...DATA.map((d, i) => ({
+    x: [d.E], y: [d.T], z: [d.A],
+    mode: 'markers+text', type: 'scatter3d',
+    name: d.name, text: d.name,
+    textposition: 'top center', textfont: {size: 10, color: '#e1e4e8'},
+    marker: {size: d.correctness * 25, color: perfColors[i], opacity: 0.9, line: {color: '#30363d', width: 1}},
+    hovertemplate: makeHover(d, '正确率', 'correctness'),
+  }))
+], {scene: make3DScene(), paper_bgcolor: '#161b22', plot_bgcolor: '#161b22', font: {color: '#e1e4e8'}, margin: {l:0,r:0,t:0,b:0}, showlegend: false}, {responsive: true});
+
+// 图2: 成本（API费用）
+const costMax = Math.max(...DATA.map(d => d.cost));
+const costMin = Math.min(...DATA.map(d => d.cost));
+Plotly.newPlot('plot3d_cost', [
+  ...makeCubeEdges(),
+  ...DATA.map(d => ({
+    x: [d.E], y: [d.T], z: [d.A],
+    mode: 'markers+text', type: 'scatter3d',
+    name: d.name, text: d.name,
+    textposition: 'top center', textfont: {size: 10, color: '#e1e4e8'},
+    marker: {
+      size: d.cost * 35,
+      color: d.cost <= costMin + 0.05 ? '#3fb950' : d.cost >= costMax - 0.05 ? '#f85149' : '#d29922',
+      opacity: 0.9, line: {color: '#30363d', width: 1},
+      colorscale: [[0,'#3fb950'],[0.5,'#d29922'],[1,'#f85149']],
+    },
+    hovertemplate: makeHover(d, '成本', 'cost'),
+  }))
+], {scene: make3DScene(), paper_bgcolor: '#161b22', plot_bgcolor: '#161b22', font: {color: '#e1e4e8'}, margin: {l:0,r:0,t:0,b:0}, showlegend: false}, {responsive: true});
+
+// 图3: 综合得分（加权: 正确性50% + 性能20% + 改动量15% + 质量15%）
+Plotly.newPlot('plot3d_overall', [
+  ...makeCubeEdges(),
+  ...DATA.map(d => ({
+    x: [d.E], y: [d.T], z: [d.A],
+    mode: 'markers+text', type: 'scatter3d',
+    name: d.name, text: d.name,
+    textposition: 'top center', textfont: {size: 10, color: '#e1e4e8'},
+    marker: {
+      size: d.overall * 35,
+      color: scoreColor(d.overall),
+      opacity: 0.9, line: {color: '#30363d', width: 1},
+    },
+    hovertemplate: makeHover(d, '综合得分', 'overall'),
+  }))
+], {scene: make3DScene(), paper_bgcolor: '#161b22', plot_bgcolor: '#161b22', font: {color: '#e1e4e8'}, margin: {l:0,r:0,t:0,b:0}, showlegend: false}, {responsive: true});
 
 // === 柱状图 ===
 const names = DATA.map(d => d.name);
