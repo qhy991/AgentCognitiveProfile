@@ -1,0 +1,196 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 900" font-family="system-ui, -apple-system, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9" fill="none" stroke="#52514e" stroke-width="1.6"/>
+    </marker>
+    <marker id="arrB" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9" fill="none" stroke="#898781" stroke-width="1.5"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="1180" height="900" fill="#ffffff"/>
+
+  <!-- ================= LAYER 1 ================= -->
+  <rect x="30" y="36" width="850" height="224" rx="10" fill="#fcfcfb" stroke="#e1e0d9"/>
+  <rect x="30" y="36" width="5" height="224" rx="2.5" fill="#86b6ef"/>
+
+  <rect x="50" y="52" width="240" height="26" rx="13" fill="#eef4fc"/>
+  <text x="64" y="70" font-size="14" font-weight="700" fill="#1c5cab">1 · Behavioral Policy Space</text>
+  <text x="306" y="70" font-size="12.5" fill="#0b0b0b"><tspan font-weight="700">&#960; = (E, T, A)</tspan><tspan fill="#52514e"> — carried by AGENTS.md / CLAUDE.md</tspan></text>
+
+  <!-- axis rows -->
+  <g font-size="12">
+    <rect x="50" y="92" width="20" height="20" rx="4" fill="#2a78d6"/>
+    <text x="60" y="106" font-size="11.5" font-weight="700" fill="#ffffff" text-anchor="middle">E</text>
+    <text x="80" y="106" fill="#0b0b0b" font-weight="600">Edit scope</text>
+    <text x="310" y="106" fill="#52514e">minimal patch &#10231; free refactor</text>
+    <text x="860" y="106" fill="#898781" font-size="10.5" text-anchor="end">signature: diff size &#183; files touched</text>
+
+    <rect x="50" y="126" width="20" height="20" rx="4" fill="#2a78d6"/>
+    <text x="60" y="140" font-size="11.5" font-weight="700" fill="#ffffff" text-anchor="middle">T</text>
+    <text x="80" y="140" fill="#0b0b0b" font-weight="600">Pre-edit info gathering</text>
+    <text x="310" y="140" fill="#52514e">act first &#10231; survey the repo first</text>
+    <text x="860" y="140" fill="#898781" font-size="10.5" text-anchor="end">signature: reads before first edit</text>
+
+    <rect x="50" y="160" width="20" height="20" rx="4" fill="#2a78d6"/>
+    <text x="60" y="174" font-size="11.5" font-weight="700" fill="#ffffff" text-anchor="middle">A</text>
+    <text x="80" y="174" fill="#0b0b0b" font-weight="600">Feedback control</text>
+    <text x="310" y="174" fill="#52514e">open-loop (verify at end) &#10231; closed-loop (test each edit)</text>
+    <text x="860" y="174" fill="#898781" font-size="10.5" text-anchor="end">signature: test-run cadence</text>
+  </g>
+
+  <line x1="50" y1="196" x2="860" y2="196" stroke="#e1e0d9"/>
+  <text x="50" y="218" font-size="11.5" fill="#52514e" font-weight="600">Three implementations of one policy:</text>
+  <g font-size="11">
+    <rect x="366" y="204" width="116" height="20" rx="10" fill="#ffffff" stroke="#c3c2b7"/>
+    <text x="424" y="218" fill="#52514e" text-anchor="middle">natural language</text>
+    <rect x="490" y="204" width="116" height="20" rx="10" fill="#ffffff" stroke="#c3c2b7"/>
+    <text x="548" y="218" fill="#52514e" text-anchor="middle">structured config</text>
+    <rect x="614" y="204" width="120" height="20" rx="10" fill="#ffffff" stroke="#c3c2b7"/>
+    <text x="674" y="218" fill="#52514e" text-anchor="middle">harness-enforced</text>
+  </g>
+  <text x="50" y="244" font-size="10.5" fill="#898781">same effect across the three &#8658; a policy, not wording &#183; the enforced arm doubles as the mechanism intervention</text>
+
+  <!-- arrow 1->2 -->
+  <line x1="120" y1="260" x2="120" y2="304" stroke="#52514e" stroke-width="1.6" marker-end="url(#arr)"/>
+  <text x="140" y="288" font-size="11.5" fill="#52514e">measure: 2&#179; factorial &#183; paired &#183; n &#8805; 5 &#183; 3 model tiers &#183; blank + length-matched controls</text>
+
+  <!-- ================= LAYER 2 ================= -->
+  <rect x="30" y="306" width="850" height="212" rx="10" fill="#fcfcfb" stroke="#e1e0d9"/>
+  <rect x="30" y="306" width="5" height="212" rx="2.5" fill="#3987e5"/>
+
+  <rect x="50" y="322" width="196" height="26" rx="13" fill="#eef4fc"/>
+  <text x="64" y="340" font-size="14" font-weight="700" fill="#1c5cab">2 · Capability Card</text>
+  <text x="262" y="340" font-size="12" fill="#52514e">what each worker is good at — in a form a manager can consume</text>
+
+  <!-- card mock -->
+  <rect x="50" y="356" width="322" height="140" rx="8" fill="#ffffff" stroke="#c3c2b7"/>
+  <text x="66" y="378" font-size="12" font-weight="700" fill="#0b0b0b">policy p011 &#183; (E=0, T=1, A=1)</text>
+  <line x1="66" y1="388" x2="356" y2="388" stroke="#e1e0d9"/>
+  <g font-size="10.8" fill="#52514e">
+    <text x="66" y="408">hard bug-fix</text>
+    <text x="356" y="408" text-anchor="end">0.94 [0.88, 0.99] &#183; worst 0.76 &#183; $0.51</text>
+    <text x="66" y="430">perf tuning</text>
+    <text x="356" y="430" text-anchor="end">0.99 [0.98, 1.00] &#183; worst 0.96 &#183; $0.44</text>
+    <text x="66" y="452">vague spec</text>
+    <text x="356" y="452" text-anchor="end">0.88 [0.79, 0.95] &#183; worst 0.66 &#183; $0.58</text>
+  </g>
+  <line x1="66" y1="462" x2="356" y2="462" stroke="#e1e0d9"/>
+  <text x="66" y="482" font-size="10.5" fill="#898781">compliance 0.87 &#183; n = 112 &#183; v2026-08 &#183; time-decayed</text>
+
+  <!-- right bullets -->
+  <g font-size="11.5" fill="#52514e">
+    <circle cx="398" cy="372" r="2.5" fill="#3987e5"/>
+    <text x="410" y="376">posterior per (policy &#215; task bucket): quality dist &#183; <tspan font-weight="700" fill="#0b0b0b">worst case</tspan> &#183; cost &#183; latency</text>
+    <circle cx="398" cy="402" r="2.5" fill="#3987e5"/>
+    <text x="410" y="406">atomic tasks calibrated into the 40&#8211;80% solve band &#8212; kills ceiling saturation</text>
+    <circle cx="398" cy="432" r="2.5" fill="#3987e5"/>
+    <text x="410" y="436">IRT: policy ability &#952; vs task difficulty b &#8594; comparable across task sets</text>
+    <circle cx="398" cy="462" r="2.5" fill="#3987e5"/>
+    <text x="410" y="466">Bayesian online update &#183; versioned per model &#215; harness &#215; policy</text>
+  </g>
+
+  <!-- arrow 2->3 -->
+  <line x1="120" y1="518" x2="120" y2="562" stroke="#52514e" stroke-width="1.6" marker-end="url(#arr)"/>
+  <text x="140" y="546" font-size="11.5" fill="#52514e">schedule: route each subtask by argmax E[Q] &#8722; &#955;&#183;C &#183; manager overhead stays on the bill</text>
+
+  <!-- ================= LAYER 3 ================= -->
+  <rect x="30" y="564" width="850" height="298" rx="10" fill="#fcfcfb" stroke="#e1e0d9"/>
+  <rect x="30" y="564" width="5" height="298" rx="2.5" fill="#1c5cab"/>
+
+  <rect x="50" y="580" width="264" height="26" rx="13" fill="#eef4fc"/>
+  <text x="64" y="598" font-size="14" font-weight="700" fill="#1c5cab">3 · Capability-Aware Routing</text>
+  <text x="330" y="598" font-size="12" fill="#52514e">decompose &#8594; route &#8594; execute &#8594; verify &#183; on DecompBench (typed subtask DAGs)</text>
+
+  <!-- DAG mock -->
+  <rect x="50" y="692" width="102" height="36" rx="8" fill="#ffffff" stroke="#c3c2b7"/>
+  <text x="101" y="714" font-size="11.5" fill="#0b0b0b" text-anchor="middle" font-weight="600">project task</text>
+
+  <line x1="152" y1="702" x2="196" y2="646" stroke="#898781" stroke-width="1.4" marker-end="url(#arrB)"/>
+  <line x1="152" y1="710" x2="196" y2="710" stroke="#898781" stroke-width="1.4" marker-end="url(#arrB)"/>
+  <line x1="152" y1="718" x2="196" y2="774" stroke="#898781" stroke-width="1.4" marker-end="url(#arrB)"/>
+  <text x="174" y="694" font-size="10" fill="#898781" text-anchor="middle">decompose</text>
+
+  <!-- subtasks + policy chips -->
+  <rect x="200" y="626" width="120" height="32" rx="7" fill="#ffffff" stroke="#c3c2b7"/>
+  <text x="260" y="646" font-size="11" fill="#0b0b0b" text-anchor="middle">concurrency fix</text>
+  <rect x="330" y="631" width="54" height="22" rx="11" fill="#eb6834"/>
+  <text x="357" y="646" font-size="11" font-weight="700" fill="#ffffff" text-anchor="middle">p000</text>
+
+  <rect x="200" y="694" width="120" height="32" rx="7" fill="#ffffff" stroke="#c3c2b7"/>
+  <text x="260" y="714" font-size="11" fill="#0b0b0b" text-anchor="middle">perf tuning</text>
+  <rect x="330" y="699" width="54" height="22" rx="11" fill="#1baf7a"/>
+  <text x="357" y="714" font-size="11" font-weight="700" fill="#ffffff" text-anchor="middle">p101</text>
+
+  <rect x="200" y="762" width="120" height="32" rx="7" fill="#ffffff" stroke="#c3c2b7"/>
+  <text x="260" y="782" font-size="11" fill="#0b0b0b" text-anchor="middle">vague-spec API</text>
+  <rect x="330" y="767" width="54" height="22" rx="11" fill="#4a3aa7"/>
+  <text x="357" y="782" font-size="11" font-weight="700" fill="#ffffff" text-anchor="middle">p011</text>
+
+  <line x1="384" y1="642" x2="428" y2="696" stroke="#898781" stroke-width="1.4" marker-end="url(#arrB)"/>
+  <line x1="384" y1="710" x2="428" y2="710" stroke="#898781" stroke-width="1.4" marker-end="url(#arrB)"/>
+  <line x1="384" y1="778" x2="428" y2="724" stroke="#898781" stroke-width="1.4" marker-end="url(#arrB)"/>
+
+  <rect x="432" y="690" width="112" height="42" rx="8" fill="#ffffff" stroke="#c3c2b7"/>
+  <text x="488" y="707" font-size="11" fill="#0b0b0b" text-anchor="middle" font-weight="600">integrate + verify</text>
+  <text x="488" y="722" font-size="9.5" fill="#898781" text-anchor="middle">integration tax measured</text>
+
+  <!-- feedback loop -->
+  <path d="M 488 732 C 488 788, 340 806, 268 800" fill="none" stroke="#898781" stroke-width="1.3" stroke-dasharray="4 3" marker-end="url(#arrB)"/>
+  <text x="60" y="826" font-size="10.5" fill="#898781">trajectory signals (test failures &#183; edit churn &#183; no-progress)</text>
+  <text x="60" y="844" font-size="10.5" fill="#898781">&#8658; escalate E, T &#183; A stays closed-loop</text>
+
+  <!-- right bullets layer 3 -->
+  <g font-size="11.5" fill="#52514e">
+    <circle cx="576" cy="630" r="2.5" fill="#1c5cab"/>
+    <text x="588" y="634">worker pool = <tspan font-weight="700" fill="#0b0b0b">same model &#215; different policies</tspan></text>
+    <circle cx="576" cy="658" r="2.5" fill="#1c5cab"/>
+    <text x="588" y="662">subtask heterogeneity induced from the cards</text>
+    <circle cx="576" cy="686" r="2.5" fill="#1c5cab"/>
+    <text x="588" y="690">per-subtask truth &#8658; <tspan font-weight="700" fill="#0b0b0b">regret exactly computable</tspan></text>
+    <circle cx="576" cy="714" r="2.5" fill="#1c5cab"/>
+    <text x="588" y="718">L0 rules &#8594; L1 predictive &#8594; L2 bandit &#8594; L3 portfolio</text>
+  </g>
+
+  <!-- pilot annotation box -->
+  <rect x="576" y="736" width="284" height="110" rx="8" fill="#f4f8fd" stroke="#b7d3f6"/>
+  <text x="592" y="758" font-size="11" font-weight="700" fill="#1c5cab">Pilot evidence (338 runs)</text>
+  <g font-size="10.5" fill="#52514e">
+    <text x="592" y="778">T on hard tasks: &#8722;0.7pp* at +$0.083* cost</text>
+    <text x="592" y="796">A: worst case 0.65 &#8594; 0.77, no mean cost</text>
+    <text x="592" y="814">oracle routing: &#8722;12% cost, equal quality</text>
+    <text x="592" y="832">best policy differs per task (Step-0 gate)</text>
+  </g>
+
+  <!-- ================= RIGHT BRACKETS ================= -->
+  <path d="M 906 44 L 914 44 L 914 512 L 906 512" fill="none" stroke="#c3c2b7" stroke-width="1.6"/>
+  <text x="930" y="66" font-size="13.5" font-weight="700" fill="#0b0b0b">Paper 1 &#8212; Measure &amp; Explain</text>
+  <g font-size="11" fill="#52514e">
+    <text x="930" y="92">&#183; policy space + 3 implementations</text>
+    <text x="930" y="112">&#183; causal effect sizes (2&#179; factorial,</text>
+    <text x="938" y="130">paired bootstrap, 3 model tiers)</text>
+    <text x="930" y="150">&#183; mechanism: verified feedback</text>
+    <text x="938" y="168">beats deliberation depth</text>
+    <text x="930" y="188">&#183; capability cards + IRT</text>
+    <text x="930" y="208">&#183; offline oracle headroom analysis</text>
+    <text x="938" y="226">(no system built)</text>
+  </g>
+  <rect x="922" y="248" width="240" height="80" rx="8" fill="#fff8ee" stroke="#eda100"/>
+  <text x="936" y="270" font-size="11" font-weight="700" fill="#8a5a00">Step 0 gate (~$150, 1 week)</text>
+  <text x="936" y="290" font-size="10.5" fill="#52514e">thicken F4 to n = 12 on the four</text>
+  <text x="936" y="308" font-size="10.5" fill="#52514e">discriminating tasks &#183; pre-registered</text>
+
+  <path d="M 906 572 L 914 572 L 914 854 L 906 854" fill="none" stroke="#c3c2b7" stroke-width="1.6"/>
+  <text x="930" y="594" font-size="13.5" font-weight="700" fill="#0b0b0b">Paper 2 &#8212; Build &amp; Schedule</text>
+  <g font-size="11" fill="#52514e">
+    <text x="930" y="620">&#183; DecompBench: composed typed</text>
+    <text x="938" y="638">subtask DAGs &#183; 3-layer scoring</text>
+    <text x="938" y="656">(subtask / end-to-end / tax)</text>
+    <text x="930" y="676">&#183; homogeneous-DAG control group</text>
+    <text x="930" y="696">&#183; manager L0&#8211;L3 vs oracle, fixed</text>
+    <text x="938" y="714">teams, single agent end-to-end</text>
+    <text x="930" y="734">&#183; integration tax vs DAG density</text>
+    <text x="930" y="754">&#183; 80% composed + 20% real</text>
+    <text x="938" y="772">project-level tasks</text>
+  </g>
+</svg>
