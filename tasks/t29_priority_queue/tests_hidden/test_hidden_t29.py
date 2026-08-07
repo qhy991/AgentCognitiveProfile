@@ -1,6 +1,6 @@
 import time, os, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from queue import TaskScheduler, PriorityQueue
+from queue import TaskScheduler, PriorityQueue, Task
 
 def test_basic_execution():
     s = TaskScheduler()
@@ -30,7 +30,6 @@ def test_starvation_prevention():
 
 def test_queue_size_limit():
     q = PriorityQueue(max_size=50)
-    from queue import Task
     for i in range(100):
         q.push(Task(f"t{i}", i, lambda: None))
     assert q.size() <= 50

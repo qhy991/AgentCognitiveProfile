@@ -1,17 +1,13 @@
-Our thread pool (pool.py) has a deadlock issue. When a task running
-inside the pool calls `execute_and_wait` to submit a subtask, it can
-deadlock if all worker threads are busy.
+Our thread pool (pool.py) keeps hanging in production. When a task running
+inside the pool submits a subtask and waits for the result, the entire pool
+sometimes freezes and never recovers.
 
-Scenario: Pool has 2 workers. Task A runs on worker 1 and calls
-execute_and_wait for task B. Task B is submitted to the queue.
-Worker 2 picks up task B. But if worker 2 is also busy, task B
-never runs, and task A waits forever — deadlock.
+The issue happens intermittently — sometimes it works fine, other times the
+request just hangs until the timeout kills it. We've tried increasing the
+timeout, but the underlying problem persists.
 
-The fix: when `execute_and_wait` is called from within a pool worker
-thread, it should execute the subtask directly on the current thread
-instead of submitting it to the queue. This prevents the deadlock
-because the worker thread is actively doing work.
+The pool is configured with 2 worker threads, and the hanging happens most
+often when multiple tasks are running concurrently, each submitting subtasks.
 
-The fix is in pool.py. The Task class and the queue mechanism are
-correct — the issue is in how execute_and_wait decides whether to
-submit to the queue or execute directly.
+The Task class and the queue mechanism seem correct — the issue appears to
+be in how the pool handles nested task execution.
