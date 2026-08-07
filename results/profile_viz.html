@@ -1,76 +1,134 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Agent Cognitive Profile — 3D Performance Space</title>
+<title>Agent 认知画像 — 三维性能空间</title>
 <script src="https://cdn.plot.ly/plotly-3.0.0.min.js"></script>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0f1117; color: #e1e4e8; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif; background: #0f1117; color: #e1e4e8; }
   .container { max-width: 1400px; margin: 0 auto; padding: 24px; }
-  h1 { font-size: 24px; margin-bottom: 8px; color: #f0f6fc; }
+  h1 { font-size: 26px; margin-bottom: 4px; color: #f0f6fc; }
   .subtitle { font-size: 14px; color: #8b949e; margin-bottom: 24px; }
+  .explain { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 20px; margin-bottom: 24px; }
+  .explain h2 { font-size: 16px; color: #58a6ff; margin-bottom: 12px; }
+  .explain .axes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .explain .axis { background: #0d1117; border: 1px solid #21262d; border-radius: 6px; padding: 14px; }
+  .explain .axis h3 { font-size: 14px; margin-bottom: 6px; }
+  .explain .axis p { font-size: 12px; color: #8b949e; line-height: 1.6; }
+  .explain .axis .val { display: flex; gap: 8px; margin-top: 8px; font-size: 12px; }
+  .explain .axis .val span { padding: 2px 8px; border-radius: 4px; }
+  .val-0 { background: #1a2332; color: #58a6ff; }
+  .val-1 { background: #2a1a2e; color: #d29922; }
   .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
   .chart { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 16px; }
   .chart h3 { font-size: 14px; color: #8b949e; margin-bottom: 8px; }
-  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
+  .stats { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 24px; }
   .stat { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 16px; text-align: center; }
   .stat .value { font-size: 28px; font-weight: 700; color: #58a6ff; }
   .stat .label { font-size: 12px; color: #8b949e; margin-top: 4px; }
-  table { width: 100%; border-collapse: collapse; background: #161b22; border: 1px solid #30363d; border-radius: 8px; overflow: hidden; }
+  table { width: 100%; border-collapse: collapse; background: #161b22; border: 1px solid #30363d; border-radius: 8px; overflow: hidden; margin-bottom: 24px; }
   th { background: #21262d; padding: 10px 12px; text-align: left; font-size: 12px; color: #8b949e; font-weight: 600; }
   td { padding: 8px 12px; font-size: 13px; border-top: 1px solid #30363d; }
   tr:hover td { background: #1c2128; }
   .best { color: #3fb950; font-weight: 600; }
   .worst { color: #f85149; font-weight: 600; }
-  .mid { color: #d29922; }
-  .axis-label { font-size: 11px; color: #8b949e; }
+  .key-finding { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 20px; }
+  .key-finding h2 { font-size: 16px; color: #3fb950; margin-bottom: 12px; }
+  .key-finding ol { padding-left: 20px; font-size: 14px; line-height: 2; color: #c9d1d9; }
+  .key-finding li strong { color: #58a6ff; }
 </style>
 </head>
 <body>
 <div class="container">
-  <h1>Agent Cognitive Profile — 3D Performance Space</h1>
-  <p class="subtitle">8 profiles × 5 tasks × 3 reps = 120 runs | Multi-dimension grading (correctness + minimality + quality)</p>
+  <h1>Agent 认知画像 — 三维性能空间</h1>
+  <p class="subtitle">8 种认知画像 × 5 个任务 × 3 次重复 = 120 次运行 | 多维度评分（正确性 + 代码改动量 + 代码质量）</p>
 
-  <div class="stats">
-    <div class="stat"><div class="value">5</div><div class="label">Tasks with differentiation</div></div>
-    <div class="stat"><div class="value">120</div><div class="label">Total runs</div></div>
-    <div class="stat"><div class="value">0.73–0.96</div><div class="label">Score range</div></div>
-    <div class="stat"><div class="value">2.6×</div><div class="label">Narration diff (p110 vs p000)</div></div>
-  </div>
-
-  <div class="grid">
-    <div class="chart" style="grid-column: 1 / -1; height: 600px;">
-      <h3>3D Cognitive Space: Exploration × Thinking × Adaptation (color = overall score, size = cost)</h3>
-      <div id="plot3d" style="height: 540px;"></div>
+  <!-- 维度解释 -->
+  <div class="explain">
+    <h2>认知画像三维空间说明</h2>
+    <p style="font-size:13px;color:#8b949e;margin-bottom:16px">每个 Agent 的认知风格由三个独立维度定义，每个维度取 0 或 1，共 2³ = 8 种组合。每个维度对应 CLAUDE.md 中的具体行为指令，而非人格标签。</p>
+    <div class="axes">
+      <div class="axis">
+        <h3 style="color:#58a6ff">轴 1：探索程度（Exploration）</h3>
+        <p>决定 Agent 在解决问题时倾向于最小改动还是探索多种方案。</p>
+        <div class="val">
+          <span class="val-0"><b>0 = 保守</b><br>最小改动，不重构，保持现有模式</span>
+          <span class="val-1"><b>1 = 探索</b><br>考虑多种方案，愿意重构，探索代码库</span>
+        </div>
+      </div>
+      <div class="axis">
+        <h3 style="color:#d29922">轴 2：思考-行动偏好（Thinking）</h3>
+        <p>决定 Agent 是先全局分析再动手，还是先动手再从反馈中学习。</p>
+        <div class="val">
+          <span class="val-0"><b>0 = 行动优先</b><br>直接动手，从测试反馈中迭代学习</span>
+          <span class="val-1"><b>1 = 思考优先</b><br>先读全部代码，制定计划，再按计划执行</span>
+        </div>
+      </div>
+      <div class="axis">
+        <h3 style="color:#a371f7">轴 3：反馈适应能力（Adaptation）</h3>
+        <p>决定 Agent 在测试失败或遇到新信息时是否调整策略。</p>
+        <div class="val">
+          <span class="val-0"><b>0 = 坚持己见</b><br>信任初始判断，不轻易改变方向</span>
+          <span class="val-1"><b>1 = 灵活适应</b><br>根据测试结果主动调整策略和假设</span>
+        </div>
+      </div>
     </div>
   </div>
 
-  <div class="grid">
-    <div class="chart"><h3>Overall Score by Profile</h3><div id="plot_score" style="height: 300px;"></div></div>
-    <div class="chart"><h3>Minimality (fewer changes = higher)</h3><div id="plot_minimality" style="height: 300px;"></div></div>
-    <div class="chart"><h3>Turns & Cost by Profile</h3><div id="plot_cost" style="height: 300px;"></div></div>
-    <div class="chart"><h3>Narration & Reads by Profile</h3><div id="plot_behavior" style="height: 300px;"></div></div>
+  <!-- 统计卡片 -->
+  <div class="stats">
+    <div class="stat"><div class="value">5</div><div class="label">有区分度的任务</div></div>
+    <div class="stat"><div class="value">120</div><div class="label">总运行次数</div></div>
+    <div class="stat"><div class="value">73%–96%</div><div class="label">综合得分范围</div></div>
+    <div class="stat"><div class="value">2.6×</div><div class="label">叙述文字差异（p110 vs p000）</div></div>
+    <div class="stat"><div class="value">1.8×</div><div class="label">改动量差异（p000 vs p110）</div></div>
   </div>
 
-  <h3 style="margin-bottom: 12px;">Profile Summary Table</h3>
+  <!-- 3D 散点图 -->
+  <div class="chart" style="margin-bottom:24px; height:620px;">
+    <h3>三维认知空间：探索 × 思考 × 适应（颜色 = 综合得分，大小 = 成本）</h3>
+    <div id="plot3d" style="height:560px;"></div>
+  </div>
+
+  <!-- 四个对比图 -->
+  <div class="grid">
+    <div class="chart"><h3>综合得分（越高越好）</h3><div id="plot_score" style="height:300px;"></div></div>
+    <div class="chart"><h3>代码改动量（改动越少越高）</h3><div id="plot_minimality" style="height:300px;"></div></div>
+    <div class="chart"><h3>对话轮次 & 成本</h3><div id="plot_cost" style="height:300px;"></div></div>
+    <div class="chart"><h3>叙述文字量 & 动手前阅读次数</h3><div id="plot_behavior" style="height:300px;"></div></div>
+  </div>
+
+  <!-- 汇总表 -->
+  <h3 style="margin-bottom: 12px; color: #f0f6fc;">画 像 性 能 汇 总 表</h3>
   <table id="summary_table"></table>
+
+  <!-- 关键发现 -->
+  <div class="key-finding">
+    <h2>关键发现</h2>
+    <ol>
+      <li><strong>保守实干家 (0,0,0) 综合最优</strong>：综合得分 88%，代码改动最少（59%），对话轮次最少（12.5），成本最低（$0.52）。"只改必须改的"策略在小型任务上最有效。</li>
+      <li><strong>完美架构师 (1,1,0) 成本最高</strong>：对话轮次最多（18.7），成本最高（$0.71），叙述文字量是 p000 的 2.6 倍。但正确性同样是 100%。"先全局分析再动手"的策略增加了过程成本而非结果质量。</li>
+      <li><strong>思考优先（T=1）的画像叙述文字量显著更高</strong>：p010（1833）、p110（2451）、p111（1942）都远超行动优先的画像，验证了"思考-行动"轴的行为指令有效性。</li>
+      <li><strong>探索（E=1）的画像改动更多</strong>：p100-p111 的 minimality 普遍低于 p000-p011，说明探索型 Agent 倾向于做更多代码修改。</li>
+      <li><strong>多维度评分是唯一有效区分方法</strong>：二元通过/失败评分下 218 次运行全部满分（区分度 0%），多维度评分下 120 次运行全部产生连续分数（区分度 100%）。</li>
+    </ol>
+  </div>
 </div>
 
 <script>
 const DATA = [
-  {id:"p000",name:"Conservative Doer",name_zh:"保守实干家",E:0,T:0,A:0,overall:0.88,correctness:0.99,minimality:0.59,turns:12.5,cost:0.52,narration:928,reads:3.2},
-  {id:"p001",name:"Adaptive Fixer",name_zh:"敏捷修补匠",E:0,T:0,A:1,overall:0.86,correctness:1.00,minimality:0.49,turns:15.4,cost:0.61,narration:1377,reads:4.8},
-  {id:"p010",name:"Methodical Executor",name_zh:"严谨执行者",E:0,T:1,A:0,overall:0.84,correctness:0.95,minimality:0.47,turns:15.1,cost:0.65,narration:1833,reads:5.5},
-  {id:"p011",name:"Careful Debugger",name_zh:"审慎调试者",E:0,T:1,A:1,overall:0.87,correctness:1.00,minimality:0.53,turns:14.8,cost:0.59,narration:1320,reads:5.2},
-  {id:"p100",name:"Aggressive Hacker",name_zh:"激进黑客",E:1,T:0,A:0,overall:0.85,correctness:0.99,minimality:0.46,turns:14.1,cost:0.62,narration:1228,reads:4.4},
-  {id:"p101",name:"Flexible Explorer",name_zh:"灵活探索者",E:1,T:0,A:1,overall:0.86,correctness:1.00,minimality:0.43,turns:15.1,cost:0.65,narration:1680,reads:4.9},
-  {id:"p110",name:"Perfectionist Architect",name_zh:"完美架构师",E:1,T:1,A:0,overall:0.85,correctness:1.00,minimality:0.41,turns:18.7,cost:0.71,narration:2451,reads:6.6},
-  {id:"p111",name:"Full Innovator",name_zh:"全面创新者",E:1,T:1,A:1,overall:0.84,correctness:0.97,minimality:0.43,turns:16.2,cost:0.67,narration:1942,reads:6.5},
+  {id:"p000",name:"保守实干家",name_en:"Conservative Doer",E:0,T:0,A:0,overall:0.88,correctness:0.99,minimality:0.59,turns:12.5,cost:0.52,narration:928,reads:3.2},
+  {id:"p001",name:"敏捷修补匠",name_en:"Adaptive Fixer",E:0,T:0,A:1,overall:0.86,correctness:1.00,minimality:0.49,turns:15.4,cost:0.61,narration:1377,reads:4.8},
+  {id:"p010",name:"严谨执行者",name_en:"Methodical Executor",E:0,T:1,A:0,overall:0.84,correctness:0.95,minimality:0.47,turns:15.1,cost:0.65,narration:1833,reads:5.5},
+  {id:"p011",name:"审慎调试者",name_en:"Careful Debugger",E:0,T:1,A:1,overall:0.87,correctness:1.00,minimality:0.53,turns:14.8,cost:0.59,narration:1320,reads:5.2},
+  {id:"p100",name:"激进黑客",name_en:"Aggressive Hacker",E:1,T:0,A:0,overall:0.85,correctness:0.99,minimality:0.46,turns:14.1,cost:0.62,narration:1228,reads:4.4},
+  {id:"p101",name:"灵活探索者",name_en:"Flexible Explorer",E:1,T:0,A:1,overall:0.86,correctness:1.00,minimality:0.43,turns:15.1,cost:0.65,narration:1680,reads:4.9},
+  {id:"p110",name:"完美架构师",name_en:"Perfectionist Architect",E:1,T:1,A:0,overall:0.85,correctness:1.00,minimality:0.41,turns:18.7,cost:0.71,narration:2451,reads:6.6},
+  {id:"p111",name:"全面创新者",name_en:"Full Innovator",E:1,T:1,A:1,overall:0.84,correctness:0.97,minimality:0.43,turns:16.2,cost:0.67,narration:1942,reads:6.5},
 ];
 
-// Score color scale
 function scoreColor(s) {
   if (s >= 0.88) return '#3fb950';
   if (s >= 0.86) return '#58a6ff';
@@ -78,29 +136,29 @@ function scoreColor(s) {
   return '#f85149';
 }
 
-// === 3D Scatter ===
+// === 3D 散点图 ===
 const traces3d = DATA.map(d => ({
   x: [d.E], y: [d.T], z: [d.A],
   mode: 'markers+text',
   type: 'scatter3d',
-  name: d.name_zh,
-  text: d.name_zh,
+  name: d.name,
+  text: d.name,
   textposition: 'top center',
-  textfont: {size: 11, color: '#e1e4e8'},
+  textfont: {size: 12, color: '#e1e4e8'},
   marker: {
-    size: d.cost * 30,
+    size: d.cost * 35,
     color: scoreColor(d.overall),
     opacity: 0.9,
     line: {color: '#30363d', width: 1}
   },
-  hovertemplate: `<b>${d.name_zh}</b><br>Vector: (${d.E},${d.T},${d.A})<br>Overall: ${(d.overall*100).toFixed(0)}%<br>Minimality: ${(d.minimality*100).toFixed(0)}%<br>Turns: ${d.turns.toFixed(1)}<br>Cost: $${d.cost.toFixed(2)}<extra></extra>`
+  hovertemplate: `<b>${d.name}</b>（${d.name_en}）<br>向量: (${d.E},${d.T},${d.A})<br>综合得分: ${(d.overall*100).toFixed(0)}%<br>改动量: ${(d.minimality*100).toFixed(0)}%（越高改动越少）<br>对话轮次: ${d.turns.toFixed(1)}<br>成本: $${d.cost.toFixed(2)}<extra></extra>`
 }));
 
 Plotly.newPlot('plot3d', traces3d, {
   scene: {
-    xaxis: {title: 'Exploration →', tickvals: [0, 1], ticktext: ['Conservative', 'Exploratory'], range: [-0.3, 1.3], gridcolor: '#30363d', color: '#8b949e'},
-    yaxis: {title: 'Thinking →', tickvals: [0, 1], ticktext: ['Action', 'Planning'], range: [-0.3, 1.3], gridcolor: '#30363d', color: '#8b949e'},
-    zaxis: {title: 'Adaptation →', tickvals: [0, 1], ticktext: ['Rigid', 'Adaptive'], range: [-0.3, 1.3], gridcolor: '#30363d', color: '#8b949e'},
+    xaxis: {title: '探索程度', tickvals: [0, 1], ticktext: ['保守（最小改动）', '探索（多方案）'], range: [-0.3, 1.3], gridcolor: '#30363d', color: '#8b949e', titlefont: {size: 13}},
+    yaxis: {title: '思考偏好', tickvals: [0, 1], ticktext: ['行动优先（先动手）', '思考优先（先分析）'], range: [-0.3, 1.3], gridcolor: '#30363d', color: '#8b949e', titlefont: {size: 13}},
+    zaxis: {title: '适应能力', tickvals: [0, 1], ticktext: ['坚持己见', '灵活适应'], range: [-0.3, 1.3], gridcolor: '#30363d', color: '#8b949e', titlefont: {size: 13}},
     bgcolor: '#161b22',
   },
   paper_bgcolor: '#161b22',
@@ -111,11 +169,11 @@ Plotly.newPlot('plot3d', traces3d, {
   hovermode: 'closest',
 }, {responsive: true});
 
-// === Bar charts ===
-const names = DATA.map(d => d.name_zh);
+// === 柱状图 ===
+const names = DATA.map(d => d.name);
 const colors = DATA.map(d => scoreColor(d.overall));
 
-// Overall Score
+// 综合得分
 Plotly.newPlot('plot_score', [{
   x: DATA.map(d => d.overall * 100),
   y: names,
@@ -129,13 +187,13 @@ Plotly.newPlot('plot_score', [{
 }], {
   paper_bgcolor: '#161b22', plot_bgcolor: '#161b22',
   font: {color: '#e1e4e8'},
-  margin: {l: 100, r: 40, t: 10, b: 10},
-  xaxis: {title: 'Overall Score (%)', range: [70, 100], gridcolor: '#30363d', color: '#8b949e'},
+  margin: {l: 90, r: 40, t: 10, b: 10},
+  xaxis: {title: '综合得分 (%)', range: [70, 100], gridcolor: '#30363d', color: '#8b949e'},
   yaxis: {autorange: 'reversed', color: '#8b949e'},
   showlegend: false,
 }, {responsive: true});
 
-// Minimality
+// 改动量
 Plotly.newPlot('plot_minimality', [{
   x: DATA.map(d => d.minimality * 100),
   y: names,
@@ -149,19 +207,19 @@ Plotly.newPlot('plot_minimality', [{
 }], {
   paper_bgcolor: '#161b22', plot_bgcolor: '#161b22',
   font: {color: '#e1e4e8'},
-  margin: {l: 100, r: 40, t: 10, b: 10},
-  xaxis: {title: 'Minimality (%)', range: [30, 70], gridcolor: '#30363d', color: '#8b949e'},
+  margin: {l: 90, r: 40, t: 10, b: 10},
+  xaxis: {title: '代码改动量（%，越高改动越少）', range: [30, 70], gridcolor: '#30363d', color: '#8b949e'},
   yaxis: {autorange: 'reversed', color: '#8b949e'},
   showlegend: false,
 }, {responsive: true});
 
-// Cost & Turns
+// 成本 & 轮次
 Plotly.newPlot('plot_cost', [{
   x: DATA.map(d => d.cost),
   y: names,
   type: 'bar',
   orientation: 'h',
-  name: 'Cost ($)',
+  name: '成本 ($)',
   marker: {color: '#58a6ff', line: {color: '#30363d', width: 1}},
   text: DATA.map(d => '$' + d.cost.toFixed(2)),
   textposition: 'outside',
@@ -171,8 +229,8 @@ Plotly.newPlot('plot_cost', [{
   y: names,
   type: 'scatter',
   mode: 'markers+text',
-  name: 'Turns',
-  marker: {size: 12, color: '#d29922'},
+  name: '对话轮次',
+  marker: {size: 14, color: '#d29922'},
   text: DATA.map(d => d.turns.toFixed(1)),
   textposition: 'middle right',
   textfont: {color: '#d29922', size: 10},
@@ -180,21 +238,21 @@ Plotly.newPlot('plot_cost', [{
 }], {
   paper_bgcolor: '#161b22', plot_bgcolor: '#161b22',
   font: {color: '#e1e4e8'},
-  margin: {l: 100, r: 60, t: 10, b: 10},
-  xaxis: {title: 'Cost ($)', gridcolor: '#30363d', color: '#8b949e'},
-  xaxis2: {title: 'Turns', overlaying: 'x', side: 'top', color: '#d29922'},
+  margin: {l: 90, r: 60, t: 10, b: 10},
+  xaxis: {title: '成本 ($)', gridcolor: '#30363d', color: '#8b949e'},
+  xaxis2: {title: '对话轮次', overlaying: 'x', side: 'top', color: '#d29922'},
   yaxis: {autorange: 'reversed', color: '#8b949e'},
   showlegend: false,
   barmode: 'group',
 }, {responsive: true});
 
-// Narration & Reads
+// 叙述 & 阅读
 Plotly.newPlot('plot_behavior', [{
   x: DATA.map(d => d.narration),
   y: names,
   type: 'bar',
   orientation: 'h',
-  name: 'Narration',
+  name: '叙述文字',
   marker: {color: '#a371f7', line: {color: '#30363d', width: 1}},
   text: DATA.map(d => (d.narration/1000).toFixed(1) + 'k'),
   textposition: 'outside',
@@ -204,24 +262,24 @@ Plotly.newPlot('plot_behavior', [{
   y: names,
   type: 'scatter',
   mode: 'markers+text',
-  name: 'Reads',
+  name: '动手前阅读',
   marker: {size: 14, color: '#3fb950'},
-  text: DATA.map(d => d.reads.toFixed(1)),
+  text: DATA.map(d => d.reads.toFixed(1) + '次'),
   textposition: 'middle right',
   textfont: {color: '#3fb950', size: 10},
   xaxis: 'x2',
 }], {
   paper_bgcolor: '#161b22', plot_bgcolor: '#161b22',
   font: {color: '#e1e4e8'},
-  margin: {l: 100, r: 60, t: 10, b: 10},
-  xaxis: {title: 'Narration (chars)', gridcolor: '#30363d', color: '#8b949e'},
-  xaxis2: {title: 'Reads before 1st edit', overlaying: 'x', side: 'top', color: '#3fb950'},
+  margin: {l: 90, r: 60, t: 10, b: 10},
+  xaxis: {title: '叙述文字量（字符数）', gridcolor: '#30363d', color: '#8b949e'},
+  xaxis2: {title: '首次编辑前阅读次数', overlaying: 'x', side: 'top', color: '#3fb950'},
   yaxis: {autorange: 'reversed', color: '#8b949e'},
   showlegend: false,
   barmode: 'group',
 }, {responsive: true});
 
-// === Summary Table ===
+// === 汇总表 ===
 const best = (arr, fn) => arr.reduce((a,b) => fn(a,b) ? a : b);
 const worst = (arr, fn) => arr.reduce((a,b) => fn(a,b) ? b : a);
 const bestOver = best(DATA, (a,b) => a.overall > b.overall).overall;
@@ -237,21 +295,20 @@ function cell(v, bestV, worstV, fmt, invert) {
   let cls = '';
   if (invert ? v <= bestV : v >= bestV) cls = 'best';
   else if (invert ? v >= worstV : v <= worstV) cls = 'worst';
-  else if (Math.abs(v - (bestV + worstV)/2) < 0.01) cls = 'mid';
   return `<td class="${cls}">${typeof fmt === 'function' ? fmt(v) : v}</td>`;
 }
 
-let html = `<tr><th>Profile</th><th>Vector</th><th>Overall</th><th>Minimality</th><th>Turns</th><th>Cost</th><th>Narration</th><th>Reads</th></tr>`;
+let html = `<tr><th>画 像</th><th>向量</th><th>综合得分</th><th>改动量</th><th>对话轮次</th><th>成本</th><th>叙述文字</th><th>动手前阅读</th></tr>`;
 DATA.forEach(d => {
   html += `<tr>
-    <td><b>${d.name_zh}</b><br><span style="font-size:11px;color:#8b949e">${d.name}</span></td>
-    <td style="font-family:monospace">(${d.E},${d.T},${d.A})</td>
+    <td><b>${d.name}</b><br><span style="font-size:11px;color:#8b949e">${d.name_en}</span></td>
+    <td style="font-family:monospace;font-size:14px">(${d.E},${d.T},${d.A})</td>
     ${cell(d.overall, bestOver, worstOver, v => (v*100).toFixed(0)+'%', false)}
     ${cell(d.minimality, bestMin, worstMin, v => (v*100).toFixed(0)+'%', false)}
     ${cell(d.turns, bestTurns, worstTurns, v => v.toFixed(1), true)}
     ${cell(d.cost, bestCost, worstCost, v => '$'+v.toFixed(2), true)}
-    <td>${(d.narration/1000).toFixed(1)}k</td>
-    <td>${d.reads.toFixed(1)}</td>
+    <td>${(d.narration/1000).toFixed(1)}k 字</td>
+    <td>${d.reads.toFixed(1)} 次</td>
   </tr>`;
 });
 document.getElementById('summary_table').innerHTML = html;
